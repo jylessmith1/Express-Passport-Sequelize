@@ -1,10 +1,12 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+
+const { authenticate } = require('../middlewares/auth');
 
 const { User } = require('../models');
 
 // Create a new user
-router.post('/', async (req, res) => {
+router.post('/', authenticate,async (req, res) => {
   try {
     const user = await User.create(req.body);
     res.status(201).json(user);
@@ -39,7 +41,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a user by ID
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate,async (req, res) => {
   try {
     const [updated] = await User.update(req.body, {
       where: { id: req.params.id },
@@ -57,7 +59,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete a user by ID
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate,async (req, res) => {
   try {
     const deleted = await User.destroy({
       where: { id: req.params.id },

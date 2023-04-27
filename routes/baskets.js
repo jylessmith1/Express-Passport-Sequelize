@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const { authenticate } = require('../middlewares/auth');
 const { Basket, BasketItem, Item } = require('../models');
 
 // Add your resource-specific routes here
 // Create a new basket
-router.post('/', async (req, res) => {
+router.post('/', authenticate, async (req, res) => {
     try {
       const basket = await Basket.create(req.body);
       res.status(201).json(basket);
@@ -39,7 +40,7 @@ router.get('/:id', async (req, res) => {
   });
 
 // Update a basket by ID
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate,async (req, res) => {
     try {
       const [updated] = await Basket.update(req.body, {
         where: { id: req.params.id },
@@ -56,7 +57,7 @@ router.put('/:id', async (req, res) => {
     }
   });
   // Delete a basket by ID
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate,async (req, res) => {
     try {
       const deleted = await Basket.destroy({
         where: { id: req.params.id },
